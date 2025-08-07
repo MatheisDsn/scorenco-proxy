@@ -1,6 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 import requests
-import json
 
 app = FastAPI()
 
@@ -19,7 +18,7 @@ HEADERS = {
 async def proxy(request: Request):
     try:
         body = await request.body()
-        response = requests.post(SCORONCO_API, headers=HEADERS, data=body, timeout=10)
-        return response.json()
+        resp = requests.post(SCORONCO_API, headers=HEADERS, data=body, timeout=10)
+        return Response(content=resp.content, status_code=resp.status_code, media_type="application/json")
     except Exception as e:
         return {"error": str(e)}
